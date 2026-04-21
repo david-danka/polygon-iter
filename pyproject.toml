@@ -1,0 +1,7 @@
+[project]
+name = "polygon-iter"
+version = "0.1.0"
+description = "Iterative polygon visualization"
+authors = [{name = "David Danka"}]
+
+pythonpath = ["src"]
