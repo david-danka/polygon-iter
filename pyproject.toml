@@ -8,9 +8,5 @@ authors = [{name = "David Danka"}]
 requires = ["setuptools"]
 build-backend = "setuptools.backends.legacy:build"
 
-[project]
-name = "polygon-iter"
-version = "0.1.0"
-
 [tool.setuptools.packages.find]
 where = ["src"]  # <-- this is the only addition
