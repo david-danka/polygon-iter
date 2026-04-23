@@ -16,8 +16,16 @@ def create_regular_polygon(
     else:
         num_points = num_sides
     
+    central_angle = 2 * math.pi / num_sides
+
+    # Rotate the polygon for a more visually appealing orientation
+    if num_sides % 2 == 0:
+        init_angle = central_angle / 2
+    else:
+        init_angle = central_angle / 2 - math.pi / 2
+    
     for i in range(num_points):
-        angle = 2 * math.pi / num_sides * i
+        angle = init_angle + central_angle * i
         x = radius * math.cos(angle) + center[0]
         y = radius * math.sin(angle) + center[1]
         points.append((x, y))
