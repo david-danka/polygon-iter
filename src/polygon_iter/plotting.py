@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
+from polygon_iter.primitives import PolygonSequence
 
 def plot_polygons(
-    polygons: list[list[tuple[float, float]]],
+    polygons: PolygonSequence,
     figure_size: tuple[int, int],
     color: str,
     alpha: float,
@@ -14,8 +15,12 @@ def plot_polygons(
     plt.figure(figsize=figure_size)
 
     for polygon in polygons:
-        x_coords, y_coords = zip(*polygon)
-        plt.plot(x_coords, y_coords, color=color, alpha=alpha)
+        plt.plot(
+            polygon.x_coords(),
+            polygon.y_coords(),
+            color=color,
+            alpha=alpha
+        )
 
     plt.axis('equal')
     plt.axis('off')
