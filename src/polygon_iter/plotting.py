@@ -46,23 +46,24 @@ def plot_polygons(
         >>> plot_polygons(sequence, figure_size=(8, 8), color='indigo', alpha=0.15)
     """
     
-    plt.figure(figsize=figure_size)
+    fig, ax = plt.subplots(figsize=figure_size)
 
     for polygon in polygons:
-        plt.plot(
+        ax.plot(
             polygon.x_coords(),
             polygon.y_coords(),
             color=color,
             alpha=alpha
         )
 
-    plt.axis('equal')
-    plt.axis('off')
-    plt.tight_layout()
+    ax.set_aspect('equal')
+    ax.axis('off')
+
+    fig.tight_layout()
 
     if save_path:
-        plt.savefig(save_path, bbox_inches='tight', pad_inches=0)
+        fig.savefig(save_path, bbox_inches='tight', pad_inches=0)
     if show:
         plt.show()
     
-    plt.close()
+    plt.close(fig)
