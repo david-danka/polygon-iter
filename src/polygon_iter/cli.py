@@ -18,6 +18,10 @@ from polygon_iter.transforms import iterate_polygon
 from polygon_iter.plotting import plot_polygons
 
 
+MAX_ITERATIONS = 10_000
+MAX_SIDES = 1_000
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Construct and return the argument parser.
  
@@ -103,6 +107,10 @@ def cli() -> None:
             "--no-show requires --save-path, "
             "otherwise no output is produced"
         )
+    if args.iterations > MAX_ITERATIONS:
+        parser.error(f"--iterations cannot exceed {MAX_ITERATIONS}.")
+    if args.num_sides > MAX_SIDES:
+        parser.error(f"--num-sides cannot exceed {MAX_SIDES}.")
     
     try:
         polygon = Polygon.regular(args.num_sides, closed=True)
