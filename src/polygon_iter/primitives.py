@@ -9,6 +9,8 @@ minimal behaviour — geometric algorithms live in transforms.py.
 from dataclasses import dataclass
 import math
 
+from polygon_iter.exceptions import InvalidNumSidesError
+
 
 @dataclass
 class Point:
@@ -22,33 +24,33 @@ class Point:
     x: float
     y: float
 
-    def as_tuple(self) -> tuple[float, float]:
-        """Return the point as a plain (x, y) tuple.
- 
-        Useful for interoperability with libraries that expect raw tuples,
-        such as Matplotlib.
- 
-        Returns:
-            A tuple (x, y) with the point's coordinates.
-        """
-        return (self.x, self.y)
+    def coincides_with(self, other: "Point", rel_tol: float = 1e-6, abs_tol: float = 1e-9) -> bool:
+        return (
+            math.isclose(self.x, other.x, rel_tol=rel_tol, abs_tol=abs_tol)
+            and math.isclose(self.y, other.y,rel_tol=rel_tol, abs_tol=abs_tol)
+        )
 
 
 @dataclass
 class Polygon:
     """An ordered sequence of Points representing a polygon.
  
-    Supports both open and closed polygons. When closed, the last point
-    is expected to coincide with the first, explicitly completing the shape.
- 
     Attributes:
         points: Ordered list of vertices. For closed polygons, the first
-            point is repeated as the last.
-        closed: Whether the polygon is closed. Defaults to True.
+            point has to be repeated as the last.
     """
 
     points: list[Point]
-    closed: bool = True
+
+    def __post_init__(self):
+        if len(self.points) < 3:
+            raise InvalidNumSidesError(
+                f"Polygon must have at least 3 points, got {len(self.points)}."
+            )
+    
+    @property
+    def closed(self) -> bool:
+        return self.points[0].coincides_with(self.points[-1])
 
     def __len__(self):
         """Return the number of points, including the closing point if present."""
@@ -98,6 +100,12 @@ class Polygon:
             >>> triangle = Polygon.regular(3)
             >>> hexagon = Polygon.regular(6, radius=2.0, center=Point(1.0, 1.0))
         """
+        if num_sides < 3:
+            raise InvalidNumSidesError(
+                f"Number of sides must be a whole number"
+                f" greater than or equal to 3, got {num_sides}."
+            )
+        
         center = center or Point(0.0, 0.0)
 
         # Include the first point to close the polygon
@@ -117,7 +125,7 @@ class Polygon:
             y = radius * math.sin(angle) + center.y
             points.append(Point(x, y))
 
-        return cls(points, closed)
+        return cls(points)
 
     
     def x_coords(self) -> list[float]:

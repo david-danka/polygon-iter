@@ -11,6 +11,7 @@ Typical usage:
     >>> sequence = iterate_polygon(polygon, t=0.2, iterations=100)
 """
 
+from polygon_iter.exceptions import InvalidRatioError, InvalidIterationsError
 from polygon_iter.primitives import Point, Polygon, PolygonSequence
 
 
@@ -40,6 +41,8 @@ def transform_polygon(polygon: Polygon, t: float) -> Polygon:
         >>> square = Polygon.regular(4)
         >>> rotated = transform_polygon(square, t=0.25)
     """
+    if not (0.0 < t < 1.0):
+        raise InvalidRatioError(f"Ratio must be between 0.0 and 1.0 (exclusive), got {t}.")
     
     # For closed polygons, the last point coincides with the first,
     # so we exclude it from the iteration count.
@@ -53,7 +56,7 @@ def transform_polygon(polygon: Polygon, t: float) -> Polygon:
         new_y = (1 - t) * p1.y + t * p2.y
         transformed_points.append(Point(new_x, new_y))
     
-    return Polygon(transformed_points, polygon.closed)
+    return Polygon(transformed_points)
 
 
 def iterate_polygon(polygon: Polygon, t: float, iterations: int,) -> PolygonSequence:
@@ -83,6 +86,14 @@ def iterate_polygon(polygon: Polygon, t: float, iterations: int,) -> PolygonSequ
         >>> len(sequence)
         501
     """
+
+    if not (0.0 < t < 1.0):
+        raise InvalidRatioError(f"Ratio must be between 0.0 and 1.0 (exclusive), got {t}.")
+    if iterations < 0:
+        raise InvalidIterationsError(
+            "Iterations must be a whole number "
+            f"greater than or equal to 0, got {iterations}."
+        )
     
     polygons = [polygon]
     for _ in range(iterations):

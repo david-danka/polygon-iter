@@ -10,6 +10,9 @@ Typical usage:
 """
 
 import argparse
+import sys
+
+from polygon_iter.exceptions import PolygonIterError
 from polygon_iter.primitives import Polygon
 from polygon_iter.transforms import iterate_polygon
 from polygon_iter.plotting import plot_polygons
@@ -41,7 +44,7 @@ def build_parser() -> argparse.ArgumentParser:
         "-i", "--iterations",
         type=int,
         default=200,
-        metavar="STEPS",
+        metavar="ITERATIONS",
         help="Number of transformation steps to apply.",
     )
     parser.add_argument(
@@ -94,23 +97,33 @@ def cli() -> None:
     """Parse arguments and run the polygon iteration pipeline."""
     parser = build_parser()
     args = parser.parse_args()
- 
-    if args.num_sides < 3:
-        parser.error("--num-sides must be >= 3.")
- 
-    polygon = Polygon.regular(args.num_sides, closed=True)
- 
-    polygons = iterate_polygon(
-        polygon,
-        t=args.ratio,
-        iterations=args.iterations,
-    )
 
-    plot_polygons(
-        polygons,
-        figure_size=tuple(args.figure_size),
-        color=args.color,
-        alpha=args.alpha,
-        show=not args.no_show,
-        save_path=args.save_path,
-    )
+    if args.no_show and not args.save_path:
+        parser.error(
+            "--no-show requires --save-path, "
+            "otherwise no output is produced"
+        )
+    
+    try:
+        polygon = Polygon.regular(args.num_sides, closed=True)
+    
+        polygons = iterate_polygon(
+            polygon,
+            t=args.ratio,
+            iterations=args.iterations,
+        )
+
+        plot_polygons(
+            polygons,
+            figure_size=tuple(args.figure_size),
+            color=args.color,
+            alpha=args.alpha,
+            show=not args.no_show,
+            save_path=args.save_path,
+        )
+    except PolygonIterError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    except KeyboardInterrupt:
+        print("\nAborted.", file=sys.stderr)
+        sys.exit(130)

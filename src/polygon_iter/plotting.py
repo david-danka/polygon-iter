@@ -7,7 +7,16 @@ iterative transformation to be visualised as an overlapping series of shapes.
 """
 
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
+from polygon_iter.exceptions import InvalidColorError, RenderingError, InvalidAlphaError, InvalidFigureSizeError
 from polygon_iter.primitives import PolygonSequence
+
+
+def is_valid_matplotlib_color(color: str) -> bool:
+    if isinstance(color, str) and color.lower() == "none":
+        return False
+    return mcolors.is_color_like(color)
 
 
 def plot_polygons(
@@ -45,7 +54,14 @@ def plot_polygons(
         >>> sequence = iterate_polygon(polygon, t=0.1, iterations=200)
         >>> plot_polygons(sequence, figure_size=(8, 8), color='indigo', alpha=0.15)
     """
-    
+
+    if not is_valid_matplotlib_color(color):
+        raise InvalidColorError(f"'{color}' is not a valid Matplotlib color.")
+    if not (0.0 <= alpha <= 1.0):
+        raise InvalidAlphaError(f"Alpha must be between 0.0 and 1.0, got {alpha}.")
+    if figure_size[0] < 0 or figure_size[1] < 0:
+        raise InvalidFigureSizeError(f"Figure width and height must be positive, got {figure_size}.")
+
     fig, ax = plt.subplots(figsize=figure_size)
     fig.canvas.manager.set_window_title("Polygon sequence plot")
 
@@ -63,7 +79,10 @@ def plot_polygons(
     fig.tight_layout()
 
     if save_path:
-        fig.savefig(save_path, bbox_inches='tight', pad_inches=0)
+        try:
+            fig.savefig(save_path, bbox_inches='tight', pad_inches=0)
+        except (OSError, ValueError) as e:
+            raise RenderingError(f"Could not save figure to '{save_path}': {e}") from e
     if show:
         plt.show()
     
