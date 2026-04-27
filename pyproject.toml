@@ -9,4 +9,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-where = ["src"]  # <-- this is the only addition
+where = ["src"]
+
+[project.scripts]
+polygon-iter = "polygon_iter.cli:cli"

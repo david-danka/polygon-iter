@@ -26,11 +26,11 @@ def main():
         - Negative t produces an outward or counter-rotating spiral.
         - Large iteration counts with small t values yield smooth spirals.
     """
-    num_sides = 4
+    num_sides = 3
     polygon = Polygon.regular(num_sides, closed=True)
     
-    iterations = 3
-    transformation_ratio = -1/3
+    iterations = 1000
+    transformation_ratio = 1/100
 
     polygons = iterate_polygon(
         polygon,
@@ -38,7 +38,7 @@ def main():
         iterations=iterations
     )
     
-    plot_polygons(polygons, figure_size=(8, 8), color='blue', alpha=1)
+    plot_polygons(polygons, figure_size=(8, 8), color='blue', alpha=0.1)
 
 if __name__ == "__main__":
     main()

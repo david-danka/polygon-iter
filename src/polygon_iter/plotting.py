@@ -47,6 +47,7 @@ def plot_polygons(
     """
     
     fig, ax = plt.subplots(figsize=figure_size)
+    fig.canvas.manager.set_window_title("Polygon sequence plot")
 
     for polygon in polygons:
         ax.plot(
