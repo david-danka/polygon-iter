@@ -6,6 +6,7 @@ Each polygon in the sequence is drawn as a separate line, allowing the full
 iterative transformation to be visualised as an overlapping series of shapes.
 """
 
+from matplotlib.collections import LineCollection
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
@@ -65,18 +66,12 @@ def plot_polygons(
     fig, ax = plt.subplots(figsize=figure_size)
     fig.canvas.manager.set_window_title("Polygon sequence plot")
 
-    for polygon in polygons:
-        ax.plot(
-            polygon.x_coords(),
-            polygon.y_coords(),
-            color=color,
-            alpha=alpha
-        )
+    collection = LineCollection(polygons.to_list(), color=color, alpha=alpha)
+    ax.add_collection(collection)
+    ax.autoscale()
 
     ax.set_aspect('equal')
     ax.axis('off')
-
-    fig.tight_layout()
 
     if save_path:
         try:

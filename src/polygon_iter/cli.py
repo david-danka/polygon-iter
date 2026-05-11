@@ -107,10 +107,6 @@ def cli() -> None:
             "--no-show requires --save-path, "
             "otherwise no output is produced"
         )
-    if args.iterations > MAX_ITERATIONS:
-        parser.error(f"--iterations cannot exceed {MAX_ITERATIONS}.")
-    if args.num_sides > MAX_SIDES:
-        parser.error(f"--num-sides cannot exceed {MAX_SIDES}.")
     
     try:
         polygon = Polygon.regular(args.num_sides, closed=True)

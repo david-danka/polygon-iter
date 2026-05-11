@@ -143,7 +143,14 @@ class Polygon:
             A list of y values in vertex order.
         """
         return [p.y for p in self.points]
+    
+    def coords(self) -> list[tuple]:
+        """Return the coordinates of all points.
 
+        Returns:
+            A list of (x, y) in vertex order.
+        """
+        return [(p.x, p.y) for p in self.points]
 
 @dataclass
 class PolygonSequence:
@@ -171,3 +178,11 @@ class PolygonSequence:
     def __iter__(self):
         """Iterate over the polygons in transformation order."""
         return iter(self.polygons)
+    
+    def to_list(self) -> list[list[tuple]]:
+        """Return the coordinates of individual polygon vertices.
+
+        Returns:
+            A list of lists of (x, y) tuples of polygon vertices.
+        """
+        return [p.coords() for p in self.polygons]
