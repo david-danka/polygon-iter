@@ -11,8 +11,8 @@ Typical usage:
     >>> sequence = iterate_polygon(polygon, t=0.2, iterations=100)
 """
 
-from polygon_iter.exceptions import InvalidRatioError, InvalidIterationsError
-from polygon_iter.primitives import Point, Polygon, PolygonSequence
+from itero.exceptions import InvalidRatioError, InvalidIterationsError
+from itero.primitives import Point, Polygon, PolygonSequence
 
 
 def transform_polygon(polygon: Polygon, t: float) -> Polygon:

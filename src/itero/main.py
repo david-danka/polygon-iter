@@ -6,12 +6,12 @@ an iterative linear interpolation transform, and rendering the resulting
 sequence as a layered plot.
  
 Typical invocation:
-    $ python -m polygon_iter
+    $ python -m itero
 """
 
-from polygon_iter.primitives import Polygon
-from polygon_iter.transforms import iterate_polygon
-from polygon_iter.plotting import plot_polygons
+from itero.primitives import Polygon
+from itero.transforms import iterate_polygon
+from itero.plotting import plot_polygons
 
 
 def main():

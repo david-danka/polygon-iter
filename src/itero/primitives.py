@@ -9,7 +9,7 @@ minimal behaviour — geometric algorithms live in transforms.py.
 from dataclasses import dataclass
 import math
 
-from polygon_iter.exceptions import InvalidNumSidesError
+from itero.exceptions import InvalidNumSidesError
 
 
 @dataclass

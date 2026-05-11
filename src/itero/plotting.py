@@ -10,8 +10,8 @@ from matplotlib.collections import LineCollection
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-from polygon_iter.exceptions import InvalidColorError, RenderingError, InvalidAlphaError, InvalidFigureSizeError
-from polygon_iter.primitives import PolygonSequence
+from itero.exceptions import InvalidColorError, RenderingError, InvalidAlphaError, InvalidFigureSizeError
+from itero.primitives import PolygonSequence
 
 
 def is_valid_matplotlib_color(color: str) -> bool:

@@ -1,7 +1,7 @@
 [project]
-name = "polygon-iter"
+name = "itero"
 version = "0.1.0"
-description = "Iterative polygon visualization"
+description = "Visualization of iterative transformations"
 authors = [{name = "David Danka"}]
 
 [build-system]
@@ -12,4 +12,4 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [project.scripts]
-polygon-iter = "polygon_iter.cli:cli"
+itero = "itero.cli:cli"

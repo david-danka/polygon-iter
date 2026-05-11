@@ -1,2 +1,2 @@
-# polygon-iter
-Iterative polygon visualization
+# itero
+Visualization of iterative transformations

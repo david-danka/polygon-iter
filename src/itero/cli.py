@@ -5,17 +5,17 @@ Exposes the full pipeline — polygon construction, iterative transformation,
 and rendering — as a single command with configurable parameters.
  
 Typical usage:
-    $ python -m polygon_iter --num-sides 6 --iterations 500 --t 0.2 --color indigo --alpha 0.1
-    $ python -m polygon_iter --num-sides 3 --save-path output.png --no-show
+    $ python -m itero --num-sides 6 --iterations 500 --t 0.2 --color indigo --alpha 0.1
+    $ python -m itero --num-sides 3 --save-path output.png --no-show
 """
 
 import argparse
 import sys
 
-from polygon_iter.exceptions import PolygonIterError
-from polygon_iter.primitives import Polygon
-from polygon_iter.transforms import iterate_polygon
-from polygon_iter.plotting import plot_polygons
+from itero.exceptions import PolygonIterError
+from itero.primitives import Polygon
+from itero.transforms import iterate_polygon
+from itero.plotting import plot_polygons
 
 
 MAX_ITERATIONS = 10_000
