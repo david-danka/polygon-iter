@@ -2,7 +2,12 @@
 name = "itero"
 version = "0.1.0"
 description = "Visualization of iterative transformations"
+readme = "README.md"
+requires-python = ">=3.10"
 authors = [{name = "David Danka"}]
+dependencies = [
+    "matplotlib==3.10.8"
+]
 
 [build-system]
 requires = ["setuptools"]
