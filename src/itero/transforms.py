@@ -11,6 +11,8 @@ Typical usage:
     >>> sequence = iterate_polygon(polygon, t=0.2, iterations=100)
 """
 
+import math
+
 from itero.exceptions import InvalidRatioError, InvalidIterationsError
 from itero.primitives import Point, Polygon, PolygonSequence
 
@@ -57,6 +59,20 @@ def transform_polygon(polygon: Polygon, t: float) -> Polygon:
         transformed_points.append(Point(new_x, new_y))
     
     return Polygon(transformed_points)
+
+
+def shrink_factor(n: int, t: float) -> float:
+    """Calculate shrink factor for the transformation defined by transform_polygon function.
+
+    Args:
+        n (int): Number of sides of regular polygon
+        t (float): transformation ratio
+
+    Returns:
+        float: shrink factor
+    """
+    angle = 2 * math.pi / n
+    return math.sqrt(1 - 2*t*(1-t)*(1 - math.cos(angle)))
 
 
 def iterate_polygon(polygon: Polygon, t: float, iterations: int,) -> PolygonSequence:

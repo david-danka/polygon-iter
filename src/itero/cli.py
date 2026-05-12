@@ -15,7 +15,7 @@ import sys
 from itero.exceptions import PolygonIterError
 from itero.primitives import Polygon
 from itero.transforms import iterate_polygon
-from itero.plotting import plot_polygons
+from itero.plotting import build_figure, required_iterations, draw_polygons
 
 
 MAX_ITERATIONS = 10_000
@@ -47,9 +47,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-i", "--iterations",
         type=int,
-        default=200,
+        default=None,
         metavar="ITERATIONS",
-        help="Number of transformation steps to apply.",
+        help=(
+            "Number of transformation steps to apply. "
+            "If omitted, computed automatically to fill the figure."
+        ),
     )
     parser.add_argument(
         "-r", "--ratio",
@@ -110,21 +113,35 @@ def cli() -> None:
     
     try:
         polygon = Polygon.regular(args.num_sides, closed=True)
+        fig, ax = build_figure(tuple(args.figure_size))
+    
+        if args.iterations is None:
+            iterations = required_iterations(
+                n=args.num_sides,
+                t=args.ratio,
+                fig=fig,
+                ax=ax,
+                linewidth=1.5
+            )
+        else:
+            iterations = args.iterations
     
         polygons = iterate_polygon(
             polygon,
             t=args.ratio,
-            iterations=args.iterations,
+            iterations=iterations,
         )
 
-        plot_polygons(
+        draw_polygons(
             polygons,
-            figure_size=tuple(args.figure_size),
+            fig=fig,
+            ax=ax,
             color=args.color,
             alpha=args.alpha,
             show=not args.no_show,
             save_path=args.save_path,
         )
+
     except PolygonIterError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

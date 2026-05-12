@@ -6,12 +6,16 @@ Each polygon in the sequence is drawn as a separate line, allowing the full
 iterative transformation to be visualised as an overlapping series of shapes.
 """
 
+import math
+
+from matplotlib.pyplot import Figure, Axes
 from matplotlib.collections import LineCollection
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 from itero.exceptions import InvalidColorError, RenderingError, InvalidAlphaError, InvalidFigureSizeError
 from itero.primitives import PolygonSequence
+from itero.transforms import shrink_factor
 
 
 def is_valid_matplotlib_color(color: str) -> bool:
@@ -20,9 +24,49 @@ def is_valid_matplotlib_color(color: str) -> bool:
     return mcolors.is_color_like(color)
 
 
-def plot_polygons(
+def required_iterations(n: int, t: float, fig: Figure, ax: Axes, linewidth: float = 1.5) -> int:
+    """
+    Compute how many polygon iterations are worth drawing.
+
+    Stops when the polygon becomes smaller than its own
+    rendered linewidth in data coordinates.
+    """
+
+    # Figure size in pixels
+    dpi = fig.dpi
+    width = fig.get_figwidth() * dpi
+    height = fig.get_figheight() * dpi
+
+    # Axes size in pixels
+    bbox = ax.get_position()
+    axes_width = width * bbox.width
+    axes_height = height * bbox.height
+
+    # Gap-closing threshold
+    # linewidth is in points (1pt = 1/72 inch)
+    lw_pixels = linewidth / 72 * dpi
+    eps_pixels = lw_pixels / 2
+    eps_over_R = eps_pixels * 2 / min(axes_height, axes_width)
+
+    s = shrink_factor(n, t)
+    return math.ceil(math.log(eps_over_R) / math.log(s))
+
+
+def build_figure(figure_size: tuple[int, int]) -> tuple[Figure, Axes]:
+    """Create and return an empty figure and axes, ready for plotting."""
+    if figure_size[0] < 0 or figure_size[1] < 0:
+        raise InvalidFigureSizeError(f"Figure width and height must be positive, got {figure_size}.")
+    
+    fig, ax = plt.subplots(figsize = figure_size)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    return fig, ax
+
+
+def draw_polygons(
     polygons: PolygonSequence,
-    figure_size: tuple[int, int],
+    fig: Figure,
+    ax: Axes,
     color: str,
     alpha: float,
     show: bool = True,
@@ -60,18 +104,12 @@ def plot_polygons(
         raise InvalidColorError(f"'{color}' is not a valid Matplotlib color.")
     if not (0.0 <= alpha <= 1.0):
         raise InvalidAlphaError(f"Alpha must be between 0.0 and 1.0, got {alpha}.")
-    if figure_size[0] < 0 or figure_size[1] < 0:
-        raise InvalidFigureSizeError(f"Figure width and height must be positive, got {figure_size}.")
 
-    fig, ax = plt.subplots(figsize=figure_size)
     fig.canvas.manager.set_window_title("Polygon sequence plot")
 
     collection = LineCollection(polygons.to_list(), color=color, alpha=alpha)
     ax.add_collection(collection)
     ax.autoscale()
-
-    ax.set_aspect('equal')
-    ax.axis('off')
 
     if save_path:
         try:
